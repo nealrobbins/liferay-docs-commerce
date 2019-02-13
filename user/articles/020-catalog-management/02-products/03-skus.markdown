@@ -130,11 +130,19 @@ use more than one warehouse, see
 Enter the number in stock at each warehouse. The quantity is adjusted
 automatically as orders are processed.
 
-### Shipping Adjustment [](id=shipping-adjustment)
+### Subscription Override
+
+A product's subscription settings can be set in *Configuration* tab &rarr;
+*Subscription*. To override these settings for a single SKU, use the SKU's
+*Subscription Override* tab. See
+[Subscriptions](/web/commerce/documentation/-/knowledge_base/1-0/subscriptions)
+for details.
+
+### Shipping Override [](id=shipping-adjustment)
 
 A product's shipping rate may be adjusted based on its weight or dimensions,
 which are set in *Configuration* tab &rarr; *Shipping*. To override these
 dimensions for a single SKU, enter it the SKU's *Shipping Adjustment* tab. See 
 [Configuration](/web/commerce/documentation/-/knowledge_base/1-0/configuration#shipping) and 
 [Shipping Methods](/web/commerce/documentation/-/knowledge_base/1-0/shipping-methods) 
-for more details.
+for details.

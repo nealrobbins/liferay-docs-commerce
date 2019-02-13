@@ -54,6 +54,13 @@ entered. An entry of "2, 4, 6" allows buyers to purchase only those quantities.
 **Multiple Order Quantity:** Only permit order quantities that are multiples of
 the number entered.
 
+## Subscription
+
+In the *Subscription* tab you can control whether the product can be purchased
+as a subscription. See
+[Subscriptions](/web/commerce/documentation/-/knowledge_base/1-0/subscriptions)
+for details.
+
 ## Shipping [](id=shipping)
 
 The *Shipping* tab governs how shipping costs for a product are calculated. It
