@@ -24,7 +24,7 @@ and activating for individual products using this drop-down.
 
 **Low Stock Activity:** Select an action to be taken automatically when
 a product's inventory falls below a certain level. You can set the level that
-triggers this action below, in the *Minimum Stock Quantity* field.
+triggers this action below, in the *Low Stock Threshold* field.
 
 **Availability Estimate:** Select an estimate from the drop-down to indicate how
 long it should take to resupply the product if inventory is depleted. This
@@ -39,8 +39,7 @@ notice on the product page.
 **Display Stock Quantity:** Check this box to display an inventory level notice
 on the product's page. 
 
-**Minimum Stock Quantity:** Enter a number to trigger the *Low Stock Activity*
-threshold. 
+**Low Stock Threshold:** Enter a number to trigger the *Low Stock Activity*.
 
 **Allow Back Orders:** Check this box to permit orders even when the product is
 out of stock.
