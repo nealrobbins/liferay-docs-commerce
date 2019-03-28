@@ -1,10 +1,10 @@
-# Minium
+# Minium [](id=minium)
 
 The Minium Accelerator models a business-to-business site geared to meet the
 needs of a wholesale distributor. Minium showcases an account management system
 where multiple users with various Roles can be added to a single buyer account.
 
-## Theme
+## Theme [](id=theme)
 
 The Minium theme includes a number of embedded features, including pop-up
 navigation and cart menus, and an Account & Order selector.
@@ -15,9 +15,9 @@ The Account & Order selector displays accounts that the current user can access
 (administrators can access any account). Once an account is selected, its open
 orders are displayed.
 
-## Pages
+## Pages [](id=pages)
 
-Minium populates a site with number of widgets and pages, providing a complete
+Minium populates a site with several widgets and pages, providing a complete
 user experience for buyers. To see the full list of pages, go to *Site Menu*
 &rarr; *Build* &rarr; *Pages*.
 
@@ -35,14 +35,14 @@ Category Facet widget.
 Minium does not use a conventional cart page. Instead, a link to the checkout
 page is included in the theme-embedded cart menu.
 
-## Catalog
+## Catalog [](id=catalog)
 
 Minium's catalog includes a range of sample products divided into several
 categories; these have been assigned various specifications and prices. Of
 course, these are no use in setting up a live store, but can save you a lot of
 time while you're working to understand the catalog's functionality.
 
-## Settings
+## Settings [](id=settings)
 
 Minium activates a number of site settings that are not enabled in a blank
 site. The site's country and currency lists are filled in, and some default
