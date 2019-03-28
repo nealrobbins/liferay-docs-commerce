@@ -1,6 +1,6 @@
-# Site Types
+# Site Types [](id=site-types)
 
-@commerce@ supports three *Site Types*: B2B, B2C, and B2B-B2C.
+@commerce@ supports three *Site Types*: B2B, B2C, and B2C-B2B.
 
 **B2B:** A business-to-businesss site assumes that all of your buyers' accounts
 are business accounts, meaning that multiple users can be assigned to each
