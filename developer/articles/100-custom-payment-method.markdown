@@ -8,16 +8,89 @@ by administrators from *Settings* &rarr; *Payment Methods*. The business logic
 of how you process payments or integrate your system with any particular
 payment provider is outside the scope of this article.
 
-There are three main types of payment methods:
+## Overview
+
+A Payment Method---that is, a class implementing
+`CommercePaymentMethod`---handles payment processing. There are three main
+types of payment methods:
 
 **Offline:** @commerce@ does not process payment (for example, a buyer might
 pay in cash when picking up a product that has been shipped to a local store).
 
 **Online Standard:** Payment is processed entirely by @commerce@.
 
-**Online Redirect:** Payment is processed online by a third party.
+**Online Redirect:** @commerce@ passes information to a third-party payment processor. Payment is processed online by a third party.
 
-To create a new payment method of any of these types, follow these steps:
+In all cases the process involves passing information from the servlet to the
+payment method via one of two payment engines.
+
+![Figure 1: All payment methods---even offline methods---follow this standard for transferring information.](../images/payment-process.png)
+
+First, the Payment Servlet receives a request from the Checkout Widget.
+Alternately---for example if @commerce@ is being used headless---the request may
+come from the API.
+
+If the request specifies that a standard payment is being made, the servlet
+calls the Payment Engine. If the request specifies a subscription payment, the
+Subscription Engine is called.
+
+The engine then selects the appropriate Payment Method. The Payment Method
+processes payment, either by calling a third-party payment processor or else by
+whatever internal logic it contains. It then returns confirmation to the servlet
+that payment has been processed.
+
+### Methods
+
+Your Payment Method---an implementation of `CommercePaymentMethod`---may need
+to handle calls to the following methods. The interface includes a default
+implementation, so it is not necessary to include methods you don't want to
+use.
+
+These methods handle actions that buyers may take:
+
+`processPayment`: The payment process begins when this method is called by
+`CommercePaymentEngine.java`'s `startPayment` method. `processPayment` is
+required for any non-recurring payment to be processed.
+
+`processRecurringPayment`: When a recurring payment is processed, this method
+is called instead of `processPayment`. It it is required if you want to support
+recurring payments.
+
+`completePayment` and `completeRecurringPayment`: these methods are required to
+complete the processing of standard and recurring payments.
+
+`cancelPayment` and `cancelRecurringPayment`: These methods are called when a
+user cancels an order or a subscription.
+
+`getSubscriptionValidity`: This method is called when @commerce@ checks to see
+if a subscription is still active.
+
+These methods handle actions that administrators may take:
+
+`authorizePayment`: This method is called to get payment authorization from
+a credit card company.
+
+`capturePayment`: This method is called to initiate the transfer of funds once
+payment is authorized.
+
+`refundPayment` and `partiallyRefundPayment`: These methods are called to issue
+a refund in whole or in part.
+
+`voidTransaction`: This method is called to cancel an authorized transaction
+that has not yet been captured.
+
+`suspendRecurringPayment`: this method is called to stop payments on a
+subscription without canceling it.
+
+`activateRecurringPayment`: this method is called to resume payments on a
+suspended subscription.
+
+The interface also calls for a number of more generic methods (`getKey` for
+example) that are covered in the example below.
+
+## Creating a New Payment Method
+
+To create a new payment method follow these steps:
 
 1.  Create a module, referencing `commerce-api` and `commerce-payment-api` in
     its build script.
@@ -26,12 +99,14 @@ To create a new payment method of any of these types, follow these steps:
     `com.liferay.commerce.payment.method.CommercePaymentMethod` interface.
     Provide whatever utility classes your component requires.
 
-3.  Create a second component implementing the `ScreenNavigationEntry` interface to
-    give your method and admin screen.
+If you want to provide a configuration screen for administrators to manage your
+payment method, create a second component implementing the
+`ScreenNavigationEntry` interface, and provide a JSP for the implementation to
+render. See 
+[Adding Custom Screens to Liferay Applications](develop/tutorials/-/knowledge_base/7-1/adding-custom-screens-to-liferay-applications)
+for details.
 
-4.  Populate your admin screen with a JSP.
-
-## Creating a Module
+### Creating a Module
 
 [Create a module](/develop/tutorials/knowledge_base/7-1/creating-modules-with-liferay-ide)
 and provide it with a build script. The `build.gradle` file should look like
@@ -47,20 +122,12 @@ this:
 
 ## Implementing the Payment Method Interface
 
-First, create a component and implement the interface. In general,
-implementations of `CommercePaymentMethod` work through the `processPayment` and
-`completePayment` methods. `processPayment` returns a utility object
-(`CommercePaymentResult` which is used to send information to the payment
-engine. Once the payment is processed---either in house or by a third
-party---`CommercePaymentEngine.java` calls the `completePayment` method to
-provide information on the outcome.
-
-This is example is a simple offline payment method. Since payment is not
-processed online, the payment engine is not needed as the transaction is assumed
-to be successful---a payment status of `PAID` is actually hard-coded into the
-`completePayment` method. However, the implementation still follows the
-@commerce@ standard of exchanging data between the payment method and payment
-engine in order to store the result of the transaction.
+This example is a simple offline payment method. Since payment is not processed
+online, the transaction is assumed to be successful---a payment status of
+`PAID` is actually hard-coded into the `completePayment` method. However, the
+implementation still follows the @commerce@ standard of exchanging data between
+the payment method and payment engine, and the servlet in order to store the
+result of the transaction.
 
 Start by adding a component to your module:
 
@@ -184,208 +251,15 @@ to the user's location.
 
     }
 
-One final method needed for online payments---but not necessary in the offline
-example above---is a `cancelPayment` method to allow a buyer to cancel
-a transaction. If you're processing payment online but in-house, this method
-must include logic to set the order status to `CANCELLED`. If you're using
-a third-party payment processor, then the processor's requirements will dictate
-how `cancelPayment` should be written.
+Once your implementation is complete---along with whatever utility classes your
+method might require---you can deploy it. If you want administrators to be able
+to manage the payment method from the UI, however, create a configuration
+screen by implementing the `ScreenNavigationEntry` interface in a new
+component. See 
+[Adding Custom Screens to Liferay Applications](develop/tutorials/-/knowledge_base/7-1/adding-custom-screens-to-liferay-applicationsusing-the-framework-for-your-application)
+for more information.
 
-## Creating an Admin Screen
-
-You need a UI for administrators to manage your payment method. Implement the
-`ScreenNavigationEntry` interface to extend the admin portlet at *Site Menu*
-&rarr; *Commerce* &rarr; *Settings* &rarr; *Payment Methods*.
-
-Add a new package to your module and create a new component. Implement the
-interface and include the `<CommercePaymentMethodGroupRel>` type parameter:
-
-    package com.liferay.commerce.payment.method.sample.servlet.taglib.ui;
-
-    import com.liferay.commerce.payment.constants.CommercePaymentScreenNavigationConstants;
-    import com.liferay.commerce.payment.method.money.order.internal.SampleCommercePaymentMethod;
-    import com.liferay.commerce.payment.method.money.order.internal.configuration.SampleGroupServiceConfiguration;
-    import com.liferay.commerce.payment.method.money.order.internal.constants.SampleCommercePaymentEngineMethodConstants;
-    import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
-    import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
-    import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
-    import com.liferay.portal.kernel.exception.PortalException;
-    import com.liferay.portal.kernel.language.LanguageUtil;
-    import com.liferay.portal.kernel.model.User;
-    import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
-    import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
-    import com.liferay.portal.kernel.settings.ParameterMapSettingsLocator;
-    import com.liferay.portal.kernel.util.Portal;
-
-    import java.io.IOException;
-
-    import java.util.Locale;
-
-    import javax.servlet.ServletContext;
-    import javax.servlet.http.HttpServletRequest;
-    import javax.servlet.http.HttpServletResponse;
-
-    import org.osgi.service.component.annotations.Component;
-    import org.osgi.service.component.annotations.Reference;
-
-    @Component(
-        property = "screen.navigation.entry.order:Integer=20",
-        service = ScreenNavigationEntry.class
-    )
-    public class
-        SampleCommercePaymentEngineMethodConfigurationScreenNavigationEntry
-            implements ScreenNavigationEntry<CommercePaymentMethodGroupRel> {
-
-Specify a string to serve as your entry's primary key:
-
-        public static final String
-            ENTRY_KEY_SAMPLE_COMMERCE_PAYMENT_METHOD_CONFIGURATION =
-                "money-order-configuration";
-
-Then include the methods required by the interface. For more information on
-these methods, see 
-[Using the Framework for your Application](develop/tutorials/-/knowledge_base/7-1/using-the-framework-for-your-application).
-
-        @Override
-        public String getCategoryKey() {
-            return CommercePaymentScreenNavigationConstants.
-                CATEGORY_KEY_COMMERCE_PAYMENT_METHOD_CONFIGURATION;
-        }
-
-        @Override
-        public String getEntryKey() {
-            return ENTRY_KEY_SAMPLE_COMMERCE_PAYMENT_METHOD_CONFIGURATION;
-        }
-
-        @Override
-        public String getLabel(Locale locale) {
-            return LanguageUtil.get(
-                locale,
-                CommercePaymentScreenNavigationConstants.
-                    CATEGORY_KEY_COMMERCE_PAYMENT_METHOD_CONFIGURATION);
-        }
-
-        @Override
-        public String getScreenNavigationKey() {
-            return CommercePaymentScreenNavigationConstants.
-                SCREEN_NAVIGATION_KEY_COMMERCE_PAYMENT_METHOD;
-        }
-
-        @Override
-        public boolean isVisible(
-            User user, CommercePaymentMethodGroupRel commercePaymentMethod) {
-
-            if (SampleCommercePaymentMethod.KEY.equals(
-                    commercePaymentMethod.getEngineKey())) {
-
-                return true;
-            }
-
-            return false;
-        }
-
-        @Override
-        public void render(
-                HttpServletRequest httpServletRequest,
-                HttpServletResponse httpServletResponse)
-            throws IOException {
-
-            try {
-                SampleGroupServiceConfiguration
-                    sampleGroupServiceConfiguration =
-                        _configurationProvider.getConfiguration(
-                            SampleGroupServiceConfiguration.class,
-                            new ParameterMapSettingsLocator(
-                                httpServletRequest.getParameterMap(),
-                                new GroupServiceSettingsLocator(
-                                    _portal.getScopeGroupId(httpServletRequest),
-                                    SampleCommercePaymentEngineMethodConstants.
-                                        SERVICE_NAME)));
-
-                httpServletRequest.setAttribute(
-                    SampleGroupServiceConfiguration.class.getName(),
-                    sampleGroupServiceConfiguration);
-            }
-            catch (PortalException pe) {
-                throw new IOException(pe);
-            }
-
-            _jspRenderer.renderJSP(
-                _servletContext, httpServletRequest, httpServletResponse,
-                "/configuration.jsp");
-        }
-
-Finally, include the necessary `@Reference` tags.
-
-        @Reference
-        private ConfigurationProvider _configurationProvider;
-
-        @Reference
-        private JSPRenderer _jspRenderer;
-
-        @Reference
-        private Portal _portal;
-
-        @Reference(
-            target = "(osgi.web.symbolicname=com.liferay.commerce.payment.method.sample)"
-        )
-        private ServletContext _servletContext;
-
-    }
-
-Note that `com.liferay.commerce.payment.method.sample` in the final `@Reference`
-is the `Bundle-SymbolicName` from the module's `bnd.bnd` file.
-
-### Providing JSP
-
-Now all you need is a JSP to render. Note that the `render` method calls for
-`configuration.jsp` to be located in your modules' `META-INF/resources`
-directory.
-
-This example provides an admin screen where administrators can enter a message
-to be displayed to buyers after placing an order:
-
-
-    <%
-    String messageXml = null;
-
-    SampleGroupServiceConfiguration sampleGroupServiceConfiguration = (SampleGroupServiceConfiguration)request.getAdttribute(SampleGroupServiceConfiguration.class.getName());
-
-    LocalizedValuesMap messageLocalizedValuesMap = sampleGroupServiceConfiguration.message();
-
-    if (messageLocalizedValuesMap != null) {
-        messageXml = LocalizationUtil.getXml(messageLocalizedValuesMap, "message");
-    }
-    %>
-
-    <portlet:actionURL name="editSampleCommercePaymentMethodConfiguration" var="editCommercePaymentMethodActionURL" />
-
-    <aui:form action="<%= editCommercePaymentMethodActionURL %>" cssClass="container-fluid-1280" method="post" name="fm">
-        <aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
-        <aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
-
-        <aui:fieldset-group markupView="lexicon">
-            <aui:fieldset>
-                <aui:field-wrapper label="message">
-                    <liferay-ui:input-localized
-                        editorName="alloyeditor"
-                        fieldPrefix="settings"
-                        fieldPrefixSeparator="--"
-                        name="message"
-                        type="editor"
-                        xml="<%= messageXml %>"
-                    />
-                </aui:field-wrapper>
-            </aui:fieldset>
-        </aui:fieldset-group>
-
-        <aui:button-row>
-            <aui:button cssClass="btn-lg" type="submit" />
-
-            <aui:button cssClass="btn-lg" href="<%= redirect %>" type="cancel" />
-        </aui:button-row>
-    </aui:form>
-
-If you've followed these instructions correctly, you should be able to deploy
-your module and see your JSP when you select the appropriate option from *Site
-Menu* &rarr; *Commerce* &rarr; *Settings* &rarr; *Payment Methods*.
+If you choose to include a configuration screen, then you should be able to
+deploy your module and see the JSP rendered by your `ScreenNavigationEntry`
+implementation when you select the appropriate option from *Site Menu* &rarr;
+*Commerce* &rarr; *Settings* &rarr; *Payment Methods*.
