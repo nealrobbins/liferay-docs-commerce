@@ -71,7 +71,7 @@ returns the `CommerceOrderValidatorResult` object for display to the user:
 
     @Override
     public CommerceOrderValidatorResult validate(
-            CommerceOrderItem commerceOrderItem)
+             Locale locale, CommerceOrderItem commerceOrderItem)
         throws PortalException {
         
         if (commerceOrderItem.getQuantity() != 100) {
@@ -89,7 +89,7 @@ this case, however, the method checks products as they are added to the cart:
 
     @Override
         public CommerceOrderValidatorResult validate(
-                CPInstance cpInstance, int quantity)
+                 Locale locale, CommerceOrder commerceorder, CPInstance cpInstance, int quantity)
             throws PortalException {
 
             if (cpInstance == null) {
