@@ -1,16 +1,6 @@
 # Creating a Custom Product Renderer
 
-Like any other widget in @product@, the appearance of the Product Details
-Widget can be customized using an 
-[Application Display Template](discover/portal/-/knowledge_base/7-1/styling-widgets-with-application-display-templates).
-For displaying products, however, this isn't ideal---unless you want all your
-products to be displayed in the same way. If you want to display products
-differently depending on the [product type](/web/commerce/documentation/-/knowledge_base/1-0/products),
-you must use custom renderers.
-
-![Figure 1: Once a custom renderer is in place, you can select it from the Product Details widget's configuration screen](../images/cpcontentrenderer.png)
-
-You need just two things to create a new product renderer:
+To customize your *Product Details* widget with a renderer, you need:
 
 -   A JSP or other file (SOY, .ftl, etc.) to render.
 
@@ -66,7 +56,9 @@ module's `META-INF/resources/render` folder.
 
 Include these `@Reference` tags. Note that instead of
 `com.liferay.commerce.product.type.virtual.web`, your reference should match
-the `Bundle-SymbolicName` from your module's `bnd.bnd` file.
+the `Bundle-SymbolicName` from your module's `bnd.bnd` file. 
+
+3. Specify `Web-ContextPath` in the `bnd.bnd` file.
 
 Once you deploy your module, open a Product Details widget's configuration
 screen, select *Use Custom Renderer*, select the product type you assigned your
