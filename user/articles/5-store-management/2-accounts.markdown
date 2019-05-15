@@ -1,58 +1,92 @@
 # Accounts
 
-Liferay Commerce stores information about customers in an account. Accounts
-primarily store shipping and billing addresses and payement information, but
-can be used to store other kinds of information too.
+An account stores information about a customer. Accounts store shipping and
+billing addresses and, if applicable, a VAT number.
 
-In Liferay Commerce, a user must be assigned to an account in order to make a
-purchase.
+Accounts are managed and users associated with them using the Accounts widget.
 
-Accounts are managed and users assigned to them using the Accounts widget.
-
-## Account Types
+## Account and Site Types
 
 There are two types of accounts: business and personal.
 
-A **personal account** stores information about an individual user. That user
-is the only user who can be assigned to the account. When you assign a user to
-an account, information from that user's profile is copied to the account.
+A **personal account** stores information about an individual user. You don't
+need to worry about creating or managing personal accounts; they're created
+automatically when a user first logs in, using data from her profile.
 
-A **business account** stores information about a business. Any number of users
-can be assigned to a business account, and each can be assigned roles that
-correspond to their position in that business. User profile data is not copied
-to the account.
+| **Note:** Data is imported from user's profile to her account only when the
+| account is generated. Subsequent changes to either the profile or the account
+| are not propagated.
+
+A **business account** stores information about a business. Multiple users can
+be associated with a business account, and can be assigned unique [Account
+Roles](#account-roles). 
+
+The type of accounts you use are determined by your site type.
+
+### Site Types 
+
+Your site type should match your store's business model: B2B, B2C, or B2X.
+
+**B2B:** A business-to-business site only recognizes business accounts, which
+means that a user must be explicitly associated with a business account in order
+to make purchases. This is recommended for B2B sellers or B2C sellers whose
+customers are grouped into a single buying unit, for example households.
+
+**B2C:** A business-to-consumer site only recognizes personal accounts, which
+means that any authenticated user can make purchases. This is recommended for
+B2C sellers or B2B sellers who do not care to support multiple users on a single
+account.
+
+**B2X:** A B2C-B2B site recognizes both personal and business accounts. Users
+can be associated with business accounts, but can also make purchases
+individually. This is recommended for sellers who want to support both account
+types on the same site.
+
+#### Changing Site Types
+
+To set your site's type, go to *Site Menu* &rarr; *Commerce* &rarr; *Settings*
+and select the *Site Type* tab. Select a type from the drop-down menu and click
+*Save*.
+
+Changing a site's type changes which accounts appear in its Accounts widget. If
+an instance contains business accounts but a site's type is set to B2C, those
+accounts still exist in the database but do not appear in the Accounts widget
+and are inaccessible to users.
+
+It is best practice to set a site's type as soon as you create it and avoid
+changing it in the future.
 
 ## Account Roles
 
-A **role** is a group of permissions collected around a particular purpose. An
-**Account Role** consists of permissions related to editing an account or
-managing an account's orders. You can create your own account roles, but the
-basics are included:
+A **role** is a group of permissions collected around a particular purpose.
+Assign the following **Account Roles** to customers to allow them to manage
+their own accounts and orders:
 
-Account Administrator: Account admins can do anything. They can modify the
-account, invite users to join the account, and assign roles to other members.
-They also have all the other permissions that other account roles have.
-
-Buyer: Buyers can view, create, and check out orders.
+Buyer: can view, create, and check out orders.
 
 Order Manager: have all the permissions of buyers, and can also manage, delete
 and approve orders.
 
+Account Administrator: Account admins can do anything. They can modify the
+account, invite users to join the account, and assign roles to other members.
+They also have all the permissions that other account roles have.
+
 A typical approach would be to enable a workflow on your site such that Account
-Administrators assign the roles, Buyers create orders, and Order Managers
-approve them. But you can customize the roles any way you want.
+Administrators assign roles, Buyers create orders, and Order Managers approve
+them. But you can customize or create new roles any way you want: see [Roles and
+Permissions](/docs/7-2/user/-/knowledge_base/u/roles-and-permissions).
 
-## Seller-side Account Management
+## Seller-side Account Management Roles
 
-Accounts can also be managed by Administrators and Sales Agents. The Sales
-Agent is a role that allows a user to manage any account assigned to him
-without granting him administratrative permissions.
+Accounts can also be managed by Administrators and Sales Agents. The Sales Agent
+is a role that allows a user to manage any account assigned to him without
+granting him administrative permissions.
 
 To give a sales agent access to accounts:
 
 1. Group your accounts in organizations using the Accounts Widget.
 
-2. Assign sales agents to the same organizations.
+2. Associate sales agents with the same organizations.
 
-Sales agents can access any account within the organization to which she is
-assigned.
+Sales agents can access any account within any of their associated
+organizations.
