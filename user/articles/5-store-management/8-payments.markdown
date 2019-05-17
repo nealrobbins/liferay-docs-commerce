@@ -89,7 +89,9 @@ The Mercanet configuration screen contains these fields:
 **Merchant ID, Secret Key, Key Version:** Entries for these fields must be
 obtained from the third party.
 
-**Environment:** 
+**Environment:** Select *Test* for testing and *Production* to conduct real
+transactions. *Simulation* is also available as a testing environment, but at a
+late stage in development Mercanet recommended that *Test* be used instead.
 
 #### Money Order
 
