@@ -53,5 +53,5 @@ measurement units are provide along with three fictional warehouses.
 
 Minium sets the Site Type to B2B, which assumes that all your buyers'
 accounts are business accounts, rather than personal. See [Site
-Types](/web/commerce/documentation/-/knowledge_base/1-0/site-types) for more
+Types](/web/commerce/documentation/-/knowledge_base/1-0/accounts#site-types) for more
 information.
