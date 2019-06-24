@@ -29,6 +29,8 @@ costs, or to an order total.
 
 ![Figure 1: An order subtitle is the sum cost of all the products in an order, after category and product discounts are applied.](../../images/price-hierarchy2.png)
 
+[Caption:] An order subtitle is the sum cost of all the products in an order, after category and product discounts are applied.
+
 +$$$
 
 Should you use a price list or a discount to adjust your products' prices?
