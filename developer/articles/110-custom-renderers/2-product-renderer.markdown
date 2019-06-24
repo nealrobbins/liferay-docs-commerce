@@ -58,7 +58,7 @@ Include these `@Reference` tags. Note that instead of
 `com.liferay.commerce.product.type.virtual.web`, your reference should match
 the `Bundle-SymbolicName` from your module's `bnd.bnd` file. 
 
-3. Specify `Web-ContextPath` in the `bnd.bnd` file.
+3. Specify a `Web-ContextPath` in the `bnd.bnd` file.
 
 Once you deploy your module, open a Product Details widget's configuration
 screen, select *Use Custom Renderer*, select the product type you assigned your
