@@ -13,7 +13,9 @@ it allows widgets to display products differently depending on their
 Once you've deployed a renderer, you can configure widgets to use it. The front
 end for this is already in place:
 
-![Figure 1: Once a custom renderer is in place, you can select it from a widget's configuration screen](../../images/cpcontentrenderer.png)
+![Figure 1: Once a custom renderer is in place, you can select it from a widget's configuration screen.](../../images/cpcontentrenderer.png)
+
+[Caption:] Once a custom renderer is in place, you can select it from a widget's configuration screen.
 
 You need two things to create a new product renderer:
 
@@ -33,7 +35,7 @@ There are three renderer interfaces:
 These can be used to customize the *Product Details*, *Search Results*,
 *Product Publisher*, and *Product Comparison Table* widgets.
 
-## Custom Product Renderer
+## Content Renderer
 
 Use an implementation of `CPContentRenderer` to customize the appearance of a
 *Product Details* widget, particularly to alter the display depending on the
@@ -42,7 +44,7 @@ to render and the product type you to which it corresponds. See details on the
 code
 [here](/web/commerce/documentation/-/knowledge_base/1-0/creating-a-custom-product-renderer).
 
-## Custom Product List Renderer
+## Content List Renderer
 
 Use `CPContentListRenderer` to customize a portlet that displays a list of
 products: *Search Results*, *Product Publisher*, or *Product Comparison Table*.
@@ -53,7 +55,7 @@ you can't customize the appearance of entries in the list (use
 must specify which widget it applies to.  Details
 [here](/web/commerce/documentation/-/knowledge_base/1-0/customizing-product-lists).
 
-## Custom Product List Entries Renderer
+## Content List Entries Renderer
 
 Use `CPContentListEntryRenderer` to customize the appearance of the entries in
 a list of products. Like `CPContentListRenderer`, this can be applied to
